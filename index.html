@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Football Stars</title>
+  <style>
+    :root {
+      --primary: #3b82f6;
+      --primary-light: #93c5fd;
+      --primary-dark: #1d4ed8;
+      --secondary: #10b981;
+      --background: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #1e293b;
+      --text-light: #64748b;
+      --danger: #ef4444;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--background);
+      margin: 0;
+      padding: 2rem;
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    h1 {
+      text-align: center;
+      color: var(--primary-dark);
+      font-size: 2.5rem;
+      margin-bottom: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+    }
+
+    h2 {
+      color: var(--primary-dark);
+      font-weight: 700;
+      margin-top: 0;
+    }
+
+    .container {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .panel {
+      background: var(--card-bg);
+      padding: 1.5rem;
+      border-radius: 1rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      width: 100%;
+      max-width: 400px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .panel:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    input[type="text"], input[type="file"], select {
+      padding: 0.75rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    input[type="text"]:focus, input[type="file"]:focus, select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    }
+
+    button {
+      background: var(--primary);
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    button:hover {
+      background: var(--primary-dark);
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    .btn-danger {
+      background: var(--danger);
+    }
+
+    .btn-danger:hover {
+      background: #dc2626;
+    }
+
+    .btn-secondary {
+      background: var(--secondary);
+    }
+
+    .btn-secondary:hover {
+      background: #0d9488;
+    }
+
+    .card {
+      border: 1px solid #e2e8f0;
+      border-radius: 1rem;
+      overflow: hidden;
+      margin-bottom: 1rem;
+      cursor: pointer;
+      text-align: center;
+      transition: transform 0.2s, box-shadow 0.2s;
+      background: var(--card-bg);
+      position: relative;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+
+    .card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      object-position: top;
+    }
+
+    .card-name {
+      background: #f1f5f9;
+      padding: 0.75rem;
+      color: var(--primary-dark);
+      font-weight: 600;
+      font-size: 0.95rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .card-position {
+      position: absolute;
+      top: 0.5rem;
+      left: 0.5rem;
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.5rem;
+      font-size: 0.75rem;
+    }
+
+    .card-rating {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      background: rgba(59, 130, 246, 0.9);
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.5rem;
+      font-size: 0.75rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .section-title {
+      text-align: center;
+      color: var(--primary-dark);
+      margin: 3rem 0 1.5rem;
+      font-size: 1.75rem;
+      font-weight: 700;
+    }
+
+    .empty-state {
+      text-align: center;
+      color: var(--text-light);
+      padding: 2rem;
+      font-size: 1.1rem;
+    }
+
+    .stats-container {
+      display: flex;
+      justify-content: space-around;
+      margin: 2rem 0;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .stat-card {
+      background: white;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      min-width: 120px;
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: var(--text-light);
+    }
+
+    .actions {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .action-btn {
+      padding: 0.25rem 0.5rem;
+      font-size: 0.8rem;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .panel {
+        max-width: 100%;
+      }
+      
+      .grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>⚽ Football Stars</h1>
+
+  <div class="stats-container">
+    <div class="stat-card">
+      <div class="stat-value" id="total-players">0</div>
+      <div class="stat-label">Всего игроков</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="favorites-count">0</div>
+      <div class="stat-label">Избранные</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="top-rating">0</div>
+      <div class="stat-label">Лучший рейтинг</div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="panel">
+      <h2>Добавить футболиста</h2>
+      <div class="input-group">
+        <input type="text" id="playerName" placeholder="Имя футболиста">
+        <input type="file" id="playerPhoto" accept="image/*">
+        <select id="playerPosition">
+          <option value="">Выберите позицию</option>
+          <option value="GK">Вратарь</option>
+          <option value="DF">Защитник</option>
+          <option value="MF">Полузащитник</option>
+          <option value="FW">Нападающий</option>
+        </select>
+        <input type="number" id="playerRating" placeholder="Рейтинг (1-100)" min="1" max="100">
+        <button onclick="addPlayer()">Добавить</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>⭐ Избранные</h2>
+      <div id="favorites" class="grid">
+        <div class="empty-state">Выберите избранных футболистов</div>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="section-title">Все футболисты</h2>
+  <div class="container">
+    <button onclick="sortPlayers('rating')" class="btn-secondary">Сортировать по рейтингу</button>
+    <button onclick="sortPlayers('name')" class="btn-secondary">Сортировать по имени</button>
+    <button onclick="filterPlayers('')" class="btn-secondary">Все</button>
+    <button onclick="filterPlayers('FW')" class="btn-secondary">Нападающие</button>
+    <button onclick="filterPlayers('MF')" class="btn-secondary">Полузащитники</button>
+    <button onclick="filterPlayers('DF')" class="btn-secondary">Защитники</button>
+    <button onclick="filterPlayers('GK')" class="btn-secondary">Вратари</button>
+  </div>
+  <div id="allPlayers" class="grid" style="max-width: 1200px; margin: 0 auto;"></div>
+
+  <script>
+    const allPlayersDiv = document.getElementById('allPlayers');
+    const favoritesDiv = document.getElementById('favorites');
+    const players = [];
+    const favorites = [];
+    let currentFilter = '';
+    let currentSort = '';
+
+    function addPlayer() {
+      const name = document.getElementById('playerName').value;
+      const file = document.getElementById('playerPhoto').files[0];
+      const position = document.getElementById('playerPosition').value;
+      const rating = parseInt(document.getElementById('playerRating').value);
+      
+      if (name && file && position && rating && rating >= 1 && rating <= 100) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const player = { 
+            name, 
+            photo: reader.result, 
+            position,
+            rating,
+            id: Date.now() // уникальный ID
+          };
+          players.push(player);
+          renderPlayers();
+          updateStats();
+          document.getElementById('playerName').value = '';
+          document.getElementById('playerPhoto').value = '';
+          document.getElementById('playerPosition').value = '';
+          document.getElementById('playerRating').value = '';
+        };
+        reader.readAsDataURL(file);
+      } else {
+        alert('Пожалуйста, заполните все поля корректно (рейтинг от 1 до 100)');
+      }
+    }
+
+    function toggleFavorite(player) {
+      const index = favorites.findIndex(p => p.id === player.id);
+      if (index > -1) {
+        favorites.splice(index, 1);
+      } else {
+        favorites.push(player);
+      }
+      renderFavorites();
+      renderPlayers();
+      updateStats();
+    }
+
+    function deletePlayer(playerId, isFavorite = false) {
+      if (confirm('Удалить этого игрока?')) {
+        // Удаляем из основного списка
+        const playerIndex = players.findIndex(p => p.id === playerId);
+        if (playerIndex > -1) {
+          players.splice(playerIndex, 1);
+        }
+        
+        // Удаляем из избранного, если есть
+        const favIndex = favorites.findIndex(p => p.id === playerId);
+        if (favIndex > -1) {
+          favorites.splice(favIndex, 1);
+        }
+        
+        if (isFavorite) {
+          renderFavorites();
+        }
+        renderPlayers();
+        updateStats();
+      }
+    }
+
+    function updateStats() {
+      document.getElementById('total-players').textContent = players.length;
+      document.getElementById('favorites-count').textContent = favorites.length;
+      
+      const topPlayer = [...players].sort((a, b) => b.rating - a.rating)[0];
+      document.getElementById('top-rating').textContent = topPlayer ? `${topPlayer.rating} (${topPlayer.name})` : '0';
+    }
+
+    function sortPlayers(criteria) {
+      currentSort = criteria;
+      applyFiltersAndSorting();
+    }
+
+    function filterPlayers(position) {
+      currentFilter = position;
+      applyFiltersAndSorting();
+    }
+
+    function applyFiltersAndSorting() {
+      let filteredPlayers = [...players];
+      
+      // Фильтрация
+      if (currentFilter) {
+        filteredPlayers = filteredPlayers.filter(p => p.position === currentFilter);
+      }
+      
+      // Сортировка
+      if (currentSort === 'rating') {
+        filteredPlayers.sort((a, b) => b.rating - a.rating);
+      } else if (currentSort === 'name') {
+        filteredPlayers.sort((a, b) => a.name.localeCompare(b.name));
+      }
+      
+      renderPlayers(filteredPlayers);
+    }
+
+    function renderPlayers(playersToRender = null) {
+      const playersArray = playersToRender || players;
+      allPlayersDiv.innerHTML = '';
+      
+      if (playersArray.length === 0) {
+        allPlayersDiv.innerHTML = '<div class="empty-state" style="grid-column: 1/-1">Нет футболистов</div>';
+        return;
+      }
+      
+      playersArray.forEach(player => {
+        const isFavorite = favorites.some(f => f.id === player.id);
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <div class="card-position">${getPositionName(player.position)}</div>
+          <div class="card-rating">${player.rating}</div>
+          <img src="${player.photo}" alt="${player.name}" loading="lazy">
+          <div class="card-name">
+            <span>${player.name}${isFavorite ? ' ⭐' : ''}</span>
+            <div class="actions">
+              <button class="action-btn" onclick="event.stopPropagation(); toggleFavorite(${JSON.stringify(player).replace(/"/g, '&quot;')})">
+                ${isFavorite ? '★' : '☆'}
+              </button>
+              <button class="action-btn btn-danger" onclick="event.stopPropagation(); deletePlayer(${player.id})">
+                ×
+              </button>
+            </div>
+          </div>
+        `;
+        card.onclick = () => showPlayerDetails(player);
+        allPlayersDiv.appendChild(card);
+      });
+    }
+
+    function renderFavorites() {
+      favoritesDiv.innerHTML = '';
+      if (favorites.length === 0) {
+        favoritesDiv.innerHTML = '<div class="empty-state">Выберите избранных футболистов</div>';
+        return;
+      }
+      
+      favorites.forEach(player => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <div class="card-position">${getPositionName(player.position)}</div>
+          <div class="card-rating">${player.rating}</div>
+          <img src="${player.photo}" alt="${player.name}" loading="lazy">
+          <div class="card-name">
+            <span>${player.name} ⭐</span>
+            <div class="actions">
+              <button class="action-btn" onclick="event.stopPropagation(); toggleFavorite(${JSON.stringify(player).replace(/"/g, '&quot;')})">
+                ★
+              </button>
+              <button class="action-btn btn-danger" onclick="event.stopPropagation(); deletePlayer(${player.id}, true)">
+                ×
+              </button>
+            </div>
+          </div>
+        `;
+        card.onclick = () => showPlayerDetails(player);
+        favoritesDiv.appendChild(card);
+      });
+    }
+
+    function getPositionName(code) {
+      const positions = {
+        'GK': 'ВР', 
+        'DF': 'ЗАЩ', 
+        'MF': 'ПЗ', 
+        'FW': 'НАП'
+      };
+      return positions[code] || code;
+    }
+
+    function showPlayerDetails(player) {
+      const detailsHtml = `
+        <div style="padding: 1rem; max-width: 400px; margin: 0 auto; text-align: center;">
+          <h2>${player.name}</h2>
+          <img src="${player.photo}" alt="${player.name}" style="width: 100%; max-height: 300px; object-fit: cover; border-radius: 0.5rem; margin: 1rem 0;">
+          <p><strong>Позиция:</strong> ${getPositionName(player.position)}</p>
+          <p><strong>Рейтинг:</strong> ${player.rating}/100</p>
+          <button onclick="toggleFavorite(${JSON.stringify(player).replace(/"/g, '&quot;')}); this.parentElement.parentElement.remove()" style="margin-top: 1rem;">
+            ${favorites.some(f => f.id === player.id) ? 'Убрать из избранного' : 'В избранное'}
+          </button>
+        </div>
+      `;
+      
+      const modal = document.createElement('div');
+      modal.style.position = 'fixed';
+      modal.style.top = '0';
+      modal.style.left = '0';
+      modal.style.right = '0';
+      modal.style.bottom = '0';
+      modal.style.backgroundColor = 'rgba(0,0,0,0.8)';
+      modal.style.display = 'flex';
+      modal.style.alignItems = 'center';
+      modal.style.justifyContent = 'center';
+      modal.style.zIndex = '1000';
+      modal.innerHTML = detailsHtml;
+      
+      modal.onclick = (e) => {
+        if (e.target === modal) {
+          document.body.removeChild(modal);
+        }
+      };
+      
+      document.body.appendChild(modal);
+    }
+
+    // Предзагруженные игроки с работающими фото
+    const predefinedPlayers = [
+      { 
+        name: 'Лионель Месси', 
+        photo: 'https://imgresizer.eurosport.com/unsafe/1200x0/filters:format(jpeg)/origin-imgresizer.eurosport.com/2023/06/07/3715580-75922848-2560-1440.jpg',
+        position: 'FW',
+        rating: 94,
+        id: 1
+      },
+      { 
+        name: 'Криштиану Роналду', 
+        photo: 'https://www.realmadrid.com/img/vertical_380px/cristiano_550x650_20180917025046.jpg',
+        position: 'FW',
+        rating: 93,
+        id: 2
+      },
+      { 
+        name: 'Килиан Мбаппе', 
+        photo: 'https://img.a.transfermarkt.technology/portrait/big/342229-1671435885.jpg',
+        position: 'FW',
+        rating: 91,
+        id: 3
+      },
+      { 
+        name: 'Кевин Де Брюйне', 
+        photo: 'https://img.a.transfermarkt.technology/portrait/big/88755-1671435885.jpg',
+        position: 'MF',
+        rating: 90,
+        id: 4
+      },
+      { 
+        name: 'Винисиус Жуниор', 
+        photo: 'https://img.a.transfermarkt.technology/portrait/big/371998-1671435885.jpg',
+        position: 'FW',
+        rating: 89,
+        id: 5
+      },
+      { 
+        name: 'Мохамед Салах', 
+        photo: 'https://img.a.transfermarkt.technology/portrait/big/148455-1671435885.jpg',
+        position: 'FW',
+        rating: 88,
+        id: 6
+      },
+      { 
+        name: 'Тони Кроос', 
+        photo: 'https://img.a.transfermarkt.technology/portrait/big/74296-1671435885.jpg',
+        position: 'MF',
+        rating: 87,
+        id: 7
+      },
+      { 
+        name: 'Мануэль Нойер', 
+        photo: 'https://img.a.transfermarkt.technology/portrait/big/17264-1671435885.jpg',
+        position: 'GK',
+        rating: 86,
+        id: 8
+      },
+      { 
+        name: 'Вирджил ван Дейк', 
+        photo: 'https://img.a.transfermarkt.technology/portrait/big/59280-1671435885.jpg',
+        position: 'DF',
+        rating: 85,
+        id: 9
+      },
+      { 
+        name: 'Эрлинг Холанд', 
+        photo: 'https://img.a.transfermarkt.technology/portrait/big/418560-1671435885.jpg',
+        position: 'FW',
+        rating: 92,
+        id: 10
+      }
+    ];
+
+    window.onload = () => {
+      players.push(...predefinedPlayers);
+      renderPlayers();
+      updateStats();
+    };
+  </script>
+
+</body>
+</html>
